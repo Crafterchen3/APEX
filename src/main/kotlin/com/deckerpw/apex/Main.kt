@@ -1,12 +1,10 @@
-package com.deckerpw.juno.framework
+package com.deckerpw.apex
 
-import com.deckerpw.apex.ui.Mouse
 import com.deckerpw.apex.ui.graphics.GradientFill
 import com.deckerpw.apex.ui.graphics.theme
 import com.deckerpw.apex.ui.widgets.*
 import java.awt.Color
 import java.awt.Graphics
-import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
