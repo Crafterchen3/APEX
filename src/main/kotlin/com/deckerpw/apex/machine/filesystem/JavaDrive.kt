@@ -31,8 +31,8 @@ class JavaDrive : Drive {
         }
     }
 
-    override fun getFile(path: String): File? {
-        val url = getURL(path) ?: return null
+    override fun getFile(path: String): File {
+        val url = getURL(path) ?: throw RuntimeException("File not found: $path")
         val file = File(url.file)
         return file
     }

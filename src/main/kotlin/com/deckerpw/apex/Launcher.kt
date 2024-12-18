@@ -10,7 +10,7 @@ class Launcher {
         @JvmStatic
         fun main(args: Array<String>) {
             val machine = Machine(args[0])
-            machine.run()
+            val superUser = machine.run()!!
             JavaDrive.javaDrive.apply {
                 list("/")?.forEach {
                     println(it)
@@ -20,8 +20,11 @@ class Launcher {
                     println(it.readBytes().toString(Charsets.UTF_8))
                 }
             }
-            println(machine.adminPassword)
-            println(machine.paulPassword)
+
+            //superUser.createUser("paul", "password")
+            val user = machine.login("paul", "password")
+            println(user == machine.currentUser)
+
         }
     }
 }

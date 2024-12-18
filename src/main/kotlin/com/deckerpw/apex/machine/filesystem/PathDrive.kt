@@ -3,10 +3,10 @@ package com.deckerpw.apex.machine.filesystem
 import java.io.File
 import java.net.URL
 
-class PathDrive(val path: String, override val name:String) : Drive {
+class PathDrive(private val root: String, override val name:String) : Drive {
 
     override fun getFile(path: String): File {
-        return File("$path/$path")
+        return File("$root/$path")
     }
 
     override fun list(path: String): Array<String?>? {

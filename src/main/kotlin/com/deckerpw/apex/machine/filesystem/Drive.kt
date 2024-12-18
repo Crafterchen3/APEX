@@ -9,7 +9,7 @@ interface Drive {
 
     val name: String
 
-    fun getFile(path: String): File?
+    fun getFile(path: String): File
     fun list(path: String): Array<String?>?
     fun isDirectory(path: String): Boolean
     fun getURL(path: String): URL?

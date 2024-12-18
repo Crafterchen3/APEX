@@ -35,6 +35,27 @@ open class Config {
         return null as T
     }
 
+    fun has(path: String): Boolean {
+        try {
+            val parts = path.split(".")
+            var current: LinkedTreeMap<String,Any> = config
+            for ((index, part) in parts.withIndex()) {
+                if (index == parts.size - 1) {
+                    return current.contains(part)
+                }
+                if (current.contains(part)) {
+                    current = current[part] as LinkedTreeMap<String,Any>
+                } else {
+                    return false
+                }
+            }
+        }catch (e: Exception){
+            println("Error checking config value at path $path")
+            e.printStackTrace()
+        }
+        return false
+    }
+
     open fun <T> set(path: String, value: T) {
         try {
             val parts = path.split(".")
