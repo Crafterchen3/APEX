@@ -25,18 +25,18 @@ class TetheredContainer() : Container(null, 0, 0, 800, 600, GradientFill(0x00C6F
     }
 }
 
-fun main() {
+fun UITest() {
     println("Hello, world!")
     val image = theme.windowCreator.getWindowImage(100, 100)
     val container = TetheredContainer()
     val windowManager = WindowManager(container, 0, 0, 800, 600)
-    container.add(SolidButton(container, 10, 10, 50, 50, arrayOf(Color.RED, Color.GREEN, Color.BLUE)) {
+    container.add(colorButton(container, 10, 10, 50, 50, arrayOf(Color.RED, Color.GREEN, Color.BLUE)) {
         println("Button clicked!")
     })
     container.add(windowManager)
     val window = Window(windowManager, 100, 100, 200, 200)
     windowManager.add(window)
-    window.add(SolidButton(window, 10, 10, 50, 50, arrayOf(Color.RED, Color.GREEN, Color.BLUE)) {
+    window.add(colorButton(window, 10, 10, 50, 50, arrayOf(Color.RED, Color.GREEN, Color.BLUE)) {
         println("Button clicked!")
     })
     //window.update()

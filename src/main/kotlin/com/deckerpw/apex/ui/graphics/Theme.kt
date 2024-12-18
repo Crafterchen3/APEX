@@ -13,6 +13,7 @@ class Theme {
     var windowBGColor = Color(0x353535)
 
     val windowCreator = ThemeWindowCreator(this)
+    val assetDir = "J:/assets"
 }
 
 abstract class WindowCreator {

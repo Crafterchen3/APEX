@@ -1,6 +1,7 @@
 package com.deckerpw.apex.machine.filesystem
 
 import java.io.File
+import java.net.URL
 
 enum class DriveLetter {
     A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
@@ -52,10 +53,10 @@ class Filesystem {
         return drive?.isReadOnly() ?: false
     }
 
-    fun getURL(path: String): String? {
+    fun getURL(path: String): URL? {
         val parts = path.split(":",limit = 2)
         val drive = getDrive(DriveLetter.valueOf(parts[0]))
-        return drive?.getURL(parts.subList(1,parts.size).joinToString("/"))?.toString()
+        return drive?.getURL(parts.subList(1,parts.size).joinToString("/"))
     }
 
     fun getFile(path: String): File {

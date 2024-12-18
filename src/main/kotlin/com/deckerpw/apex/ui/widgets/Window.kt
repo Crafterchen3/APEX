@@ -1,5 +1,6 @@
 package com.deckerpw.apex.ui.widgets
 
+import com.deckerpw.apex.ui.getThemedImage
 import com.deckerpw.apex.ui.graphics.WindowCreator
 import com.deckerpw.apex.ui.graphics.theme
 import java.awt.Button
@@ -9,7 +10,7 @@ open class Window(parent: WindowManager?, x: Int, y: Int, width: Int, height: In
 
     init {
         add(TitleBar())
-        add(SolidButton(this, width - 13, 3, 10, 10, arrayOf(theme.primaryColor, theme.primaryColor, theme.primaryColor)){
+        add(mappedImageButton(this, width - 13, 3, 10, 10, getThemedImage("textures/buttons/close_button.png")!!) {
             parent?.remove(this)
             parent?.update()
         })

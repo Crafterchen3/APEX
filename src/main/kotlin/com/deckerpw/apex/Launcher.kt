@@ -24,7 +24,7 @@ class Launcher {
             //superUser.createUser("paul", "password")
             val user = machine.login("paul", "password")
             println(user == machine.currentUser)
-
+            UITest()
         }
     }
 }
