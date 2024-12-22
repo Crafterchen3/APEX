@@ -15,10 +15,6 @@ class Launcher {
                 list("/")?.forEach {
                     println(it)
                 }
-                println()
-                getURL("/assets/test.txt")?.openStream()?.use {
-                    println(it.readBytes().toString(Charsets.UTF_8))
-                }
             }
 
             //superUser.createUser("paul", "password")
