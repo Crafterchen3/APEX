@@ -3,6 +3,7 @@ package com.deckerpw.apex
 import com.deckerpw.apex.machine.Machine
 import com.deckerpw.apex.machine.filesystem.DriveLetter
 import com.deckerpw.apex.machine.filesystem.JavaDrive
+import com.deckerpw.apex.machine.util.translatedString
 
 class Launcher {
 
@@ -20,6 +21,7 @@ class Launcher {
             //superUser.createUser("paul", "password")
             val user = machine.login("paul", "password")
             println(user == machine.currentUser)
+            println(translatedString("machine.init"))
             UITest()
         }
     }

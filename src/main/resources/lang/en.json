@@ -1,0 +1,6 @@
+{
+  "machine.init" : "Machine is initialized",
+  "machine.start" : "Machine is started",
+  "machine.stop" : "Machine is stopped",
+  "machine.reset" : "Machine is reset"
+}

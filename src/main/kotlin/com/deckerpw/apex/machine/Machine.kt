@@ -4,12 +4,15 @@ import com.deckerpw.apex.machine.filesystem.DriveLetter
 import com.deckerpw.apex.machine.filesystem.Filesystem
 import com.deckerpw.apex.machine.filesystem.JavaDrive
 import com.deckerpw.apex.machine.filesystem.PathDrive
+import com.deckerpw.apex.machine.util.Localization
 import com.google.gson.internal.LinkedTreeMap
 
 class Machine(val path: String) {
 
     companion object {
-        var instance: Machine? = null
+        private var _instance: Machine? = null
+        val instance: Machine
+            get() = _instance ?: throw RuntimeException("Machine has not been initialized")
     }
 
     val filesystem = Filesystem()
@@ -24,15 +27,30 @@ class Machine(val path: String) {
     val isRunning: Boolean
         get() = running
 
+    val localization: Localization
+
+    private var _locale = "en"
+    val locale: String
+        get() = _locale
+
     init {
-        if (instance != null) {
+        if (_instance != null) {
             throw RuntimeException("Machine already exists")
         }
-        instance = this
+        _instance = this
         filesystem.mount(DriveLetter.A, PathDrive(path, "Root"))
         filesystem.mount(DriveLetter.J, JavaDrive.javaDrive)
         config = FileConfig(filesystem.getFile("A:config.json"))
+        localization = Localization()
+        loadLanguages()
         populateUsers()
+    }
+
+    private fun loadLanguages() {
+        localization.apply {
+            loadLanguage("en",filesystem.getURL("J:/lang/en.json") ?: throw RuntimeException("Localization file not found"))
+            loadLanguage("de",filesystem.getURL("J:/lang/de.json") ?: throw RuntimeException("Localization file not found"))
+        }
     }
 
     private fun populateUsers() {
