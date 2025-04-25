@@ -18,8 +18,8 @@ fun Widget.asMouse(): Mouse? = this as? Mouse
 
 interface Keyboard {
 
-    fun onKeyDown(key: Int)
-    fun onKeyUp(key: Int)
+    fun onKeyDown(key: Int, char: Char)
+    fun onKeyUp(key: Int, char: Char)
 
 }
 

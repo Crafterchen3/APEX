@@ -12,6 +12,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.reflections:reflections:0.10.2")
 }
 
 tasks.test {

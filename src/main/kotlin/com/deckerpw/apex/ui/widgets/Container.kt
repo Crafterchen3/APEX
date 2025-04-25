@@ -17,9 +17,15 @@ open class Container(
 ) : Widget(parent, x, y, width, height), Mouse, Keyboard {
 
     protected val children = mutableListOf<Widget>()
-    private var selectedWidget: Widget? = null
+    internal var selectedWidget: Widget? = null
     private var hoveringWidget: Widget? = null
     private var clickedWidget: Widget? = null
+
+    fun selectWidget(widget: Widget) {
+        selectedWidget?.selected = false
+        selectedWidget = widget
+        selectedWidget?.selected = true
+    }
 
     fun add(widget: Widget, autoUpdate: Boolean = true) {
         children.add(widget)
@@ -29,10 +35,11 @@ open class Container(
 
     fun remove(widget: Widget) {
         children.remove(widget)
+        update()
     }
 
     override fun paint(graphics2D: Graphics2D) {
-        background?.render(graphics2D, x, y, width, height)
+        background?.render(graphics2D, 0, 0, width, height)
         if (children.isEmpty())
             return
         children.forEach { it.render(graphics2D) }
@@ -58,6 +65,7 @@ open class Container(
     fun moveToTop(widget: Widget) {
         children.remove(widget)
         children.add(widget)
+        update()
     }
 
     private fun checkHover(x: Int, y: Int):Boolean {
@@ -127,12 +135,12 @@ open class Container(
     }
 
 
-    override fun onKeyDown(key: Int) {
-        (selectedWidget as? Keyboard)?.onKeyDown(key)
+    override fun onKeyDown(key: Int, char: Char) {
+        (selectedWidget as? Keyboard)?.onKeyDown(key, char)
     }
 
-    override fun onKeyUp(key: Int) {
-        (selectedWidget as? Keyboard)?.onKeyUp(key)
+    override fun onKeyUp(key: Int, char: Char) {
+        (selectedWidget as? Keyboard)?.onKeyUp(key, char)
     }
 
 }

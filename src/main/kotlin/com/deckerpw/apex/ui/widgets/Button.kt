@@ -3,6 +3,7 @@ package com.deckerpw.apex.ui.widgets
 import com.deckerpw.apex.ui.graphics.Fill
 import com.deckerpw.apex.ui.graphics.TextureFill
 import com.deckerpw.apex.ui.graphics.asSolidFill
+import com.deckerpw.apex.ui.graphics.text
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
@@ -13,8 +14,9 @@ class SolidButton(
     y: Int,
     width: Int,
     height: Int,
+    val label: String? = null,
     private val palette: List<Fill>,
-    var action: Runnable
+    var action: (button: SolidButton, x: Int, y: Int) -> Unit
 ) : MouseWidget(parent, x, y, width, height) {
 
     //pallette[0] = normal
@@ -41,12 +43,16 @@ class SolidButton(
             }
         }
         fill.render(graphics2D, 0, 0, width, height)
+        if (label != null) {
+            graphics2D.color = Color.BLACK
+            graphics2D.text(label, 2, 0)
+        }
     }
 
     override fun onMouseUp(x: Int, y: Int, button: Int) {
         super.onMouseUp(x, y, button)
         if (hovered) {
-            action.run()
+            action(this, x, y)
         }
     }
 
@@ -58,10 +64,11 @@ fun colorButton(
     y: Int,
     width: Int,
     height: Int,
+    label: String? = null,
     palette: Array<Color>,
-    action: Runnable
+    action: (button: SolidButton, x: Int, y: Int) -> Unit
 ): SolidButton {
-    return SolidButton(parent, x, y, width, height, palette.map { it.asSolidFill() }, action)
+    return SolidButton(parent, x, y, width, height, label, palette.map { it.asSolidFill() }, action)
 }
 
 fun imageButton(
@@ -70,10 +77,11 @@ fun imageButton(
     y: Int,
     width: Int,
     height: Int,
+    label: String? = null,
     palette: List<BufferedImage>,
-    action: Runnable
+    action: (button: SolidButton, x: Int, y: Int) -> Unit
 ): SolidButton {
-    return SolidButton(parent, x, y, width, height, palette.map { TextureFill(it) }, action)
+    return SolidButton(parent, x, y, width, height, label, palette.map { TextureFill(it) }, action)
 }
 
 fun mappedImageButton(
@@ -82,8 +90,9 @@ fun mappedImageButton(
     y: Int,
     width: Int,
     height: Int,
+    label: String? = null,
     image: BufferedImage,
-    action: Runnable
+    action: (button: SolidButton, x: Int, y: Int) -> Unit
 ): SolidButton {
     val palette = mutableListOf<Fill>()
     if (image.width >= width * 4) {
@@ -101,5 +110,5 @@ fun mappedImageButton(
     } else {
         throw IllegalArgumentException("Image is too small to be a mapped image button")
     }
-    return SolidButton(parent, x, y, width, height, palette, action)
+    return SolidButton(parent, x, y, width, height, label, palette, action)
 }

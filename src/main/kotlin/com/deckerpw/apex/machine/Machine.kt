@@ -5,15 +5,19 @@ import com.deckerpw.apex.machine.filesystem.Filesystem
 import com.deckerpw.apex.machine.filesystem.JavaDrive
 import com.deckerpw.apex.machine.filesystem.PathDrive
 import com.deckerpw.apex.machine.util.Localization
+import com.deckerpw.apex.ui.Screen
+import com.deckerpw.apex.ui.scenes.LoginScene
+import com.deckerpw.apex.ui.scenes.WindowManagerScene
+import com.deckerpw.apex.ui.screenHeight
+import com.deckerpw.apex.ui.screenWidth
+import com.deckerpw.apex.ui.widgets.WindowManager
 import com.google.gson.internal.LinkedTreeMap
 
-class Machine(val path: String) {
+private var _machine: Machine? = null
+val machine: Machine
+    get() = _machine ?: throw RuntimeException("Machine has not been initialized")
 
-    companion object {
-        private var _instance: Machine? = null
-        val instance: Machine
-            get() = _instance ?: throw RuntimeException("Machine has not been initialized")
-    }
+class Machine(val path: String, val useOpenGL: Boolean = false) {
 
     val filesystem = Filesystem()
     internal val config: FileConfig
@@ -33,17 +37,44 @@ class Machine(val path: String) {
     val locale: String
         get() = _locale
 
-    init {
-        if (_instance != null) {
-            throw RuntimeException("Machine already exists")
+    // Screen can be either a regular Screen or an OpenGLScreen
+    val screen: Any
+    val windowManager: WindowManager?
+        get() {
+            if (!useOpenGL) {
+                (screen as? Screen)?.let { s ->
+                    (s.currentScene as? WindowManagerScene)?.let {
+                        return it.windowManager
+                    }
+                }
+            }
+            return null
         }
-        _instance = this
+
+    init {
+        if (_machine != null) {
+            throw IllegalStateException("Machine already exists")
+        }
+        _machine = this
         filesystem.mount(DriveLetter.A, PathDrive(path, "Root"))
         filesystem.mount(DriveLetter.J, JavaDrive.javaDrive)
         config = FileConfig(filesystem.getFile("A:config.json"))
         localization = Localization()
         loadLanguages()
         populateUsers()
+
+        loader.findPrograms()
+
+        // Initialize the appropriate screen based on rendering mode
+        screen = if (useOpenGL) {
+            // OpenGL rendering is handled separately in the Launcher
+            Any() // Placeholder, not actually used
+        } else {
+            // Traditional AWT/Swing rendering
+            val s = Screen()
+            s.setScene(LoginScene(s, screenWidth, screenHeight))
+            s
+        }
     }
 
     private fun loadLanguages() {
@@ -98,6 +129,10 @@ class Machine(val path: String) {
         running = true
         println("Machine is running at $path")
         return SuperUser(this)
+    }
+
+    fun runProgram(program: String) {
+        loader.getProgram(program)?.onStart()
     }
 }
 

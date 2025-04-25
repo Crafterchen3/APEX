@@ -5,7 +5,7 @@ import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
 abstract class Widget(
-    private val parent: Widget?,
+    internal open val parent: Widget?,
     var x: Int,
     var y: Int,
     var width: Int,
@@ -22,13 +22,25 @@ abstract class Widget(
                 onDeselected()
         }
 
-    open fun update() {
-        buffer = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-        val graphics2D = buffer!!.createGraphics()
-        paint(graphics2D)
-        graphics2D.dispose()
+    open fun update(first: Boolean = false) {
+        if (first){
+            Thread{
+                buffer = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+                val graphics2D = buffer!!.createGraphics()
+                paint(graphics2D)
+                graphics2D.dispose()
 
-        parent?.update()
+                parent?.update(false)
+            }.start()
+        }else{
+            buffer = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+            val graphics2D = buffer!!.createGraphics()
+            paint(graphics2D)
+            graphics2D.dispose()
+
+            parent?.update(false)
+        }
+
     }
 
     fun render(graphics2D: Graphics2D) {
@@ -46,6 +58,10 @@ abstract class Widget(
     }
 
     protected abstract fun paint(graphics2D: Graphics2D)
+
+    fun getPositionOnScreen(x: Int, y: Int) : Pair<Int, Int> {
+        return parent?.getPositionOnScreen(x + this.x, y + this.y) ?: Pair(x + this.x, y + this.y)
+    }
 
 }
 

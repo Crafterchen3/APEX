@@ -8,7 +8,7 @@ val theme = Theme()
 
 class Theme {
 
-    var titleBarColor = Color(0xaa0000)
+    var titleBarColor = Color(0xaa00000)
     var primaryColor = Color(0xff5555)
     var windowBGColor = Color(0x353535)
 

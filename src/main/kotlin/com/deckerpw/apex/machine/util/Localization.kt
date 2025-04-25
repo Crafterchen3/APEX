@@ -1,6 +1,6 @@
 package com.deckerpw.apex.machine.util
 
-import com.deckerpw.apex.machine.Machine
+import com.deckerpw.apex.machine.machine
 import com.google.gson.Gson
 import java.net.URL
 
@@ -14,7 +14,7 @@ class Localization {
     }
 
     fun translate(key: String): String {
-        return localizationMap[Machine.instance.locale]?.get(key) ?: localizationMap["en"]?.get(key) ?: key
+        return localizationMap[machine.locale]?.get(key) ?: localizationMap["en"]?.get(key) ?: key
     }
 
     fun translate(key: String,locale: String): String {
@@ -24,5 +24,5 @@ class Localization {
 }
 
 fun translatedString(key: String): String {
-    return Machine.instance.localization.translate(key)
+    return machine.localization.translate(key)
 }
