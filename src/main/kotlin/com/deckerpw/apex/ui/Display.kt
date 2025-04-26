@@ -5,12 +5,16 @@ import com.deckerpw.apex.ui.graphics.PatternFill
 import com.deckerpw.apex.ui.graphics.centeredText
 import com.deckerpw.apex.ui.widgets.Container
 import com.deckerpw.apex.ui.widgets.Widget
-import java.awt.Color
-import java.awt.Graphics
-import java.awt.Graphics2D
+import java.awt.*
+import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.Transferable
+import java.awt.datatransfer.UnsupportedFlavorException
 import java.awt.event.*
 import java.awt.image.BufferedImage
+import java.io.IOException
+import javax.swing.JComponent
 import javax.swing.JFrame
+import javax.swing.KeyStroke
 import javax.swing.SwingUtilities
 import kotlin.math.ceil
 
@@ -25,11 +29,9 @@ open class TetheredContainer internal constructor(): Container(null, 0, 0, scree
 
     override fun update(first: Boolean) {
         // capture frame time
-        var currentTime = System.nanoTime()
         super.update(first)
         SwingUtilities.invokeLater {
             window.repaint()
-            println("Took ${(System.nanoTime() - currentTime) / 1000000.0}ns to update")
         }
     }
 }
@@ -60,24 +62,37 @@ class Display internal constructor(private val container: Container) : JFrame() 
             setLocation(5, 5)
             setSize((screenWidth* scale).toInt(), (screenHeight* scale).toInt())
         }
+        // Add a screenshot keyboard shortcut
+        //rootPane.setFocusTraversalKeysEnabled(false);
+        rootPane.registerKeyboardAction((ActionListener { e: ActionEvent? ->
+            val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+            var bufferedImage = BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB)
+            container.render(bufferedImage.createGraphics())
+            clipboard.setContents(TransferableImage(bufferedImage)) { _, _ -> }
+            println("Copied Screenshot to Clipboard")
+        }), KeyStroke.getKeyStroke("ctrl R"), JComponent.WHEN_FOCUSED)
         isVisible = true
         //createBufferStrategy(2)
         screenWidth = ceil((width / scale)).toInt()
         screenHeight = ceil((height / scale)).toInt()
         container.width = screenWidth
         container.height = screenHeight
+
+
         addMouseListener(Listener(container))
         addMouseMotionListener(Listener(container))
         addMouseWheelListener(Listener(container))
-        addKeyListener(Listener(container))
+        rootPane.addKeyListener(Listener(container))
     }
 
     override fun paint(g: Graphics?) {
+        var currentTime = System.nanoTime()
         screenWidth = ceil((width / scale)).toInt()
         screenHeight = ceil((height / scale)).toInt()
         val image = BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB)
         container.render(image.createGraphics())
         g?.drawImage(image, 0, 0, (screenWidth * scale).toInt(), (screenHeight * scale).toInt(), null)
+        //println("Took ${(System.nanoTime() - currentTime) / 1000000.0}ms to update")
 //        //pick a random color every frame
 //        g?.color = Color((Math.random() * 255).toInt(), (Math.random() * 255).toInt(), (Math.random() * 255).toInt())
 //        g?.fillRect(width - 50, height - 50, 50, 50)
@@ -125,7 +140,7 @@ class Display internal constructor(private val container: Container) : JFrame() 
         }
 
         override fun mouseWheelMoved(e: MouseWheelEvent?) {
-            container.onMouseWheel(((e?.x ?: 0) / scale).toInt(), ((e?.y ?: 0) / scale).toInt(), e?.scrollAmount ?: 0)
+            container.onMouseWheel(((e?.x ?: 0) / scale).toInt(), ((e?.y ?: 0) / scale).toInt(), e?.preciseWheelRotation!!.toInt())
         }
 
     }
@@ -168,4 +183,33 @@ class Screen : TetheredContainer() {
         super.update(first)
     }
 
+}
+
+//Taken from https://www.coderanch.com/t/333565/java/BufferedImage-System-Clipboard (:
+private class TransferableImage(var i: Image) : Transferable {
+    @Throws(UnsupportedFlavorException::class, IOException::class)
+    override fun getTransferData(flavor: DataFlavor): Any {
+        if (flavor.equals(DataFlavor.imageFlavor) && i != null) {
+            return i
+        } else {
+            throw UnsupportedFlavorException(flavor)
+        }
+    }
+
+    override fun getTransferDataFlavors(): Array<DataFlavor?> {
+        val flavors = arrayOfNulls<DataFlavor>(1)
+        flavors[0] = DataFlavor.imageFlavor
+        return flavors
+    }
+
+    override fun isDataFlavorSupported(flavor: DataFlavor): Boolean {
+        val flavors = transferDataFlavors
+        for (i in flavors.indices) {
+            if (flavor.equals(flavors[i])) {
+                return true
+            }
+        }
+
+        return false
+    }
 }

@@ -12,6 +12,11 @@ class Theme {
     var primaryColor = Color(0xff5555)
     var windowBGColor = Color(0x353535)
 
+    var listEntryColorA = Color(0x222222)
+    var listEntryColorB = Color(0x333333)
+    var listEntrySelectedColor = Color(0x555555)
+    var listEntryTextColor = Color(0xdddddd)
+
     val windowCreator = ThemeWindowCreator(this)
     val assetDir = "J:/assets"
 }

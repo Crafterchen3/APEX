@@ -254,12 +254,14 @@ class DesktopIcon(
 
     override fun onMouseDrag(x: Int, y: Int, button: Int) {
         super.onMouseDrag(x, y, button)
-        if (abs(startX - x) > 10 || abs(startY - y) > 10)
-            dragging = true
-        if (dragging) {
-            this.x += x - startX
-            this.y += y - startY
-            update()
+        if (button != 3) {
+            if (abs(startX - x) > 10 || abs(startY - y) > 10)
+                dragging = true
+            if (dragging) {
+                this.x += x - startX
+                this.y += y - startY
+                update()
+            }
         }
     }
 }

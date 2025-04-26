@@ -20,6 +20,8 @@ open class Container(
     internal var selectedWidget: Widget? = null
     private var hoveringWidget: Widget? = null
     private var clickedWidget: Widget? = null
+    protected var offsetX = 0;
+    protected var offsetY = 0;
 
     fun selectWidget(widget: Widget) {
         selectedWidget?.selected = false
@@ -42,7 +44,8 @@ open class Container(
         background?.render(graphics2D, 0, 0, width, height)
         if (children.isEmpty())
             return
-        children.forEach { it.render(graphics2D) }
+        val graphics2Db = graphics2D.create(offsetX,offsetY,width,height) as Graphics2D
+        children.forEach { it.render(graphics2Db) }
     }
 
     override fun onDeselected() {
@@ -51,7 +54,9 @@ open class Container(
     }
 
     fun getWidgetAt(x: Int, y: Int): Widget? {
-        return children.reversed().find { it.x <= x && it.x + it.width >= x && it.y <= y && it.y + it.height >= y }
+        val realX = x - offsetX
+        val realY = y - offsetY
+        return children.reversed().find { it.x <= realX && it.x + it.width >= realX && it.y <= realY && it.y + it.height >= realY }
     }
 
     fun getWidgets(): List<Widget> {
@@ -69,9 +74,11 @@ open class Container(
     }
 
     private fun checkHover(x: Int, y: Int):Boolean {
+        val realX = x - offsetX
+        val realY = y - offsetY
         for (widget in children.reversed()) {
-            if (widget.x <= x && widget.x + widget.width >= x && widget.y <= y && widget.y + widget.height >= y)
-                if (widget.asMouse()?.onMouseMove(x - widget.x, y - widget.y) == true) {
+            if (widget.x <= realX && widget.x + widget.width >= realX && widget.y <= realY && widget.y + widget.height >= realY)
+                if (widget.asMouse()?.onMouseMove(realX - widget.x, realY - widget.y) == true) {
                     if (hoveringWidget != widget){
                         hoveringWidget?.asMouse()?.onExit()
                         hoveringWidget = widget
@@ -90,15 +97,19 @@ open class Container(
     }
 
     override fun onMouseDrag(x: Int, y: Int, button: Int) {
-        clickedWidget?.asMouse()?.onMouseDrag(x - selectedWidget!!.x, y - selectedWidget!!.y, button)
+        val realX = x - offsetX
+        val realY = y - offsetY
+        clickedWidget?.asMouse()?.onMouseDrag(realX - selectedWidget!!.x, realY - selectedWidget!!.y, button)
         checkHover(x, y)
     }
 
     override fun onMouseDown(x: Int, y: Int, button: Int): Boolean {
+        val realX = x - offsetX
+        val realY = y - offsetY
         clickedWidget = null
         for (widget in children.reversed()) {
-            if (widget.x <= x && widget.x + widget.width >= x && widget.y <= y && widget.y + widget.height >= y)
-                if (widget.asMouse()?.onMouseDown(x - widget.x, y - widget.y, button) == true) {
+            if (widget.x <= realX && widget.x + widget.width >= realX && widget.y <= realY && widget.y + widget.height >= realY)
+                if (widget.asMouse()?.onMouseDown(realX - widget.x, realY - widget.y, button) == true) {
                     if (selectedWidget != widget){
                         selectedWidget?.selected = false
                         selectedWidget = widget
@@ -116,13 +127,17 @@ open class Container(
     }
 
     override fun onMouseUp(x: Int, y: Int, button: Int) {
-        clickedWidget?.asMouse()?.onMouseUp(x - selectedWidget!!.x, y - selectedWidget!!.y, button)
+        val realX = x - offsetX
+        val realY = y - offsetY
+        clickedWidget?.asMouse()?.onMouseUp(realX - selectedWidget!!.x, realY - selectedWidget!!.y, button)
         clickedWidget = null
     }
 
     override fun onMouseWheel(x: Int, y: Int, direction: Int) {
-        val widget = getWidgetAt(x, y)
-        widget?.asMouse()?.onMouseWheel(x - widget.x, y - widget.y, direction)
+        val realX = x - offsetX
+        val realY = y - offsetY
+        checkHover(x, y)
+        hoveringWidget?.asMouse()?.onMouseWheel(realX- hoveringWidget!!.x, realY - hoveringWidget!!.y, direction)
     }
 
     override fun onEnter() {

@@ -20,18 +20,19 @@ class LoginScene(parent: Screen, width: Int, height: Int) :
 
     init {
         add(windowManager)
-        window = Window(windowManager, (width - 200) / 2, (height - 200) / 2, 200, 200, "Login to APEX")
+        window = Window(windowManager, (width - 200) / 2, (height - 200) / 2, 200, 180, "Login to APEX")
         windowManager.add(window)
         window.apply {
-            add(
-                getThemedImage("textures/os/profile_picture.png")!!
-                    .createRectangle(window, (200 - 64) / 2, 20, 64, 64)
-            )
-            username = TextField(window, 20, 100, 160, "", placeholder = "Username", onEnterPressed = {
+//            add(
+//                getThemedImage("textures/os/profile_picture.png")!!
+//                    .createRectangle(window, (200 - 64) / 2, 20, 64, 64)
+//            )
+            add(TextBox(window, 5, 0, 190, 64, Color.WHITE, true, "APEX", fontSize = 30))
+            username = TextField(window, 20, 80, 160, "", placeholder = "Username", onEnterPressed = {
                 selectWidget(password)
             })
             add(username)
-            password = TextField(window, 20, 130, 160, "", '*', placeholder = "Password", onEnterPressed = {
+            password = TextField(window, 20, 110, 160, "", '*', placeholder = "Password", onEnterPressed = {
                 login()
             })
             add(password)
@@ -39,7 +40,7 @@ class LoginScene(parent: Screen, width: Int, height: Int) :
                 colorButton(
                     window,
                     20,
-                    160,
+                    140,
                     160,
                     20,
                     "Login",

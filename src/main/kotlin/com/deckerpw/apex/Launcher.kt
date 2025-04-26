@@ -15,10 +15,7 @@ class Launcher {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            // Check if we should use OpenGL rendering
-            val useOpenGL = args.size > 1 && args[1] == "--opengl"
-
-            val machine = Machine(args[0], useOpenGL)
+            val machine = Machine(args[0])
             val superUser = machine.run()!!
             JavaDrive.javaDrive.apply {
                 list("/")?.forEach {

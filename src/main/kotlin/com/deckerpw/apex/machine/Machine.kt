@@ -1,11 +1,13 @@
 package com.deckerpw.apex.machine
 
+import com.deckerpw.apex.apps.filemanager.FileTypeRegistry
 import com.deckerpw.apex.machine.filesystem.DriveLetter
 import com.deckerpw.apex.machine.filesystem.Filesystem
 import com.deckerpw.apex.machine.filesystem.JavaDrive
 import com.deckerpw.apex.machine.filesystem.PathDrive
 import com.deckerpw.apex.machine.util.Localization
 import com.deckerpw.apex.ui.Screen
+import com.deckerpw.apex.ui.scenes.DesktopScene
 import com.deckerpw.apex.ui.scenes.LoginScene
 import com.deckerpw.apex.ui.scenes.WindowManagerScene
 import com.deckerpw.apex.ui.screenHeight
@@ -17,7 +19,7 @@ private var _machine: Machine? = null
 val machine: Machine
     get() = _machine ?: throw RuntimeException("Machine has not been initialized")
 
-class Machine(val path: String, val useOpenGL: Boolean = false) {
+class Machine(val path: String) {
 
     val filesystem = Filesystem()
     internal val config: FileConfig
@@ -38,18 +40,18 @@ class Machine(val path: String, val useOpenGL: Boolean = false) {
         get() = _locale
 
     // Screen can be either a regular Screen or an OpenGLScreen
-    val screen: Any
+    var screen: Screen
     val windowManager: WindowManager?
         get() {
-            if (!useOpenGL) {
-                (screen as? Screen)?.let { s ->
-                    (s.currentScene as? WindowManagerScene)?.let {
-                        return it.windowManager
-                    }
+            (screen as? Screen)?.let { s ->
+                (s.currentScene as? WindowManagerScene)?.let {
+                    return it.windowManager
                 }
             }
             return null
         }
+
+    val fileTypeRegistry: FileTypeRegistry = FileTypeRegistry()
 
     init {
         if (_machine != null) {
@@ -64,16 +66,17 @@ class Machine(val path: String, val useOpenGL: Boolean = false) {
         populateUsers()
 
         loader.findPrograms()
-
-        // Initialize the appropriate screen based on rendering mode
-        screen = if (useOpenGL) {
-            // OpenGL rendering is handled separately in the Launcher
-            Any() // Placeholder, not actually used
-        } else {
-            // Traditional AWT/Swing rendering
-            val s = Screen()
-            s.setScene(LoginScene(s, screenWidth, screenHeight))
-            s
+        screen = Screen()
+        if (config.has("autologin") and config.has("autologin.username") and config.has("autologin.password")) {
+            val username = config.get<String>("autologin.username")
+            val password = config.get<String>("autologin.password")
+            val user = machine.login(username, password)
+            if (user != null)
+                screen.setScene(DesktopScene(screen, screenWidth, screenHeight))
+            else
+                screen.setScene(LoginScene(screen, screenWidth, screenHeight))
+        }else{
+            screen.setScene(LoginScene(screen, screenWidth, screenHeight))
         }
     }
 

@@ -12,7 +12,7 @@ abstract class Widget(
     var height: Int
 ) {
 
-    private var buffer: BufferedImage? = null
+    protected var buffer: BufferedImage? = null
     var selected: Boolean = false
         set(value) {
             field = value

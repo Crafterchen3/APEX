@@ -50,7 +50,8 @@ class ContextMenu(
                     width - 2,
                     20,
                     action.name,
-                    arrayOf(Color(0, 0, 0, 0), theme.primaryColor, theme.primaryColor)
+                    arrayOf(Color(0, 0, 0, 0), theme.primaryColor, theme.primaryColor),
+                    false
                 ) { _, _, _ ->
                     action.action()
                     (parent as? Container)?.remove(this)
