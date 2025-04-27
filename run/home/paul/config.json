@@ -1,0 +1,108 @@
+{
+  "desktop": {
+    "icons": {
+      "hotel": {
+        "x": 24.0,
+        "y": 26.0
+      },
+      "settings": {
+        "x": 23.0,
+        "y": 102.0
+      },
+      "Settings": {
+        "alnk": {
+          "x": 25.0,
+          "y": 25.0
+        },
+        "desktop": {
+          "x": 270,
+          "y": 368
+        }
+      },
+      "Settings2": {
+        "desktop": {
+          "x": 321.0,
+          "y": 111.0
+        }
+      },
+      "Hotel": {
+        "desktop": {
+          "x": 25.0,
+          "y": 93.0
+        }
+      },
+      "paukl": {
+        "desktop": {
+          "x": 290.0,
+          "y": 169.0
+        }
+      },
+      "negro": {
+        "desktop": {
+          "x": 267.0,
+          "y": 161.0
+        }
+      },
+      "sdas": {
+        "desktop": {
+          "x": 289.0,
+          "y": 82.0
+        }
+      },
+      "Nathan": {
+        "desktop": {
+          "x": 216.0,
+          "y": 23.0
+        }
+      },
+      "ist": {
+        "desktop": {
+          "x": 265.0,
+          "y": 34.0
+        }
+      },
+      "ein": {
+        "desktop": {
+          "x": 281.0,
+          "y": 90.0
+        }
+      },
+      "Paul": {
+        "desktop": {
+          "x": 220.0,
+          "y": 91.0
+        }
+      },
+      "loggg": {
+        "desktop": {
+          "x": 364.0,
+          "y": 103.0
+        }
+      },
+      "PatternTest": {
+        "desktop": {
+          "x": 270,
+          "y": 270
+        }
+      },
+      "paul": {
+        "desktop": {
+          "x": 457.0,
+          "y": 170.0
+        }
+      },
+      "FileManager": {
+        "desktop": {
+          "x": 305.0,
+          "y": 158.0
+        }
+      },
+      "File Manager": {
+        "desktop": {
+          "x": 270,
+          "y": 172
+        }
+      }
+    }
+  }
+}

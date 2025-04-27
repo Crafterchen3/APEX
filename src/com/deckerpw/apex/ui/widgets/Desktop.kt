@@ -215,7 +215,17 @@ class DesktopIcon(
             null
         )
         graphics2D.color = java.awt.Color.WHITE
-        graphics2D.centeredText(title, width / 2, height - 20)
+        if (title.length >= 10){
+            val parts = title.split(" ")
+            if (parts.size == 2) {
+                graphics2D.centeredText(parts[0], width / 2, height - 20)
+                graphics2D.centeredText(parts[1], width / 2, height - 8)
+            }else{
+                graphics2D.centeredText(title, width / 2, height - 20)
+            }
+        }else {
+            graphics2D.centeredText(title, width / 2, height - 20)
+        }
     }
 
     override fun onMouseUp(x: Int, y: Int, button: Int) {

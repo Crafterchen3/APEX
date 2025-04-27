@@ -2,10 +2,9 @@ package com.deckerpw.apex.ui.scenes
 
 import com.deckerpw.apex.machine.Machine
 import com.deckerpw.apex.machine.machine
-import com.deckerpw.apex.ui.Screen
-import com.deckerpw.apex.ui.getThemedImage
+import com.deckerpw.apex.ui.*
+import com.deckerpw.apex.ui.graphics.fontSize
 import com.deckerpw.apex.ui.graphics.theme
-import com.deckerpw.apex.ui.testPatternFill
 import com.deckerpw.apex.ui.widgets.*
 import com.deckerpw.apex.ui.widgets.shapes.createRectangle
 import java.awt.Color
@@ -27,7 +26,7 @@ class LoginScene(parent: Screen, width: Int, height: Int) :
 //                getThemedImage("textures/os/profile_picture.png")!!
 //                    .createRectangle(window, (200 - 64) / 2, 20, 64, 64)
 //            )
-            add(TextBox(window, 5, 0, 190, 64, Color.WHITE, true, "APEX", fontSize = 30))
+            add(TextBox(window, 5, 0, 190, 64, "APEX", modifier = Modifier.fontSize(30).centerString(true)))
             username = TextField(window, 20, 80, 160, "", placeholder = "Username", onEnterPressed = {
                 selectWidget(password)
             })

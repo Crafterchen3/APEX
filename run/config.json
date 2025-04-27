@@ -1,0 +1,12 @@
+{
+  "users": {
+    "paul": {
+      "display_name": "paul",
+      "pass": 1216985755
+    }
+  },
+  "autologin": {
+    "username": "paul",
+    "password": "password"
+  }
+}
